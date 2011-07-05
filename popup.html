@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <title>Boombox player</title>
+    <link type="text/css" rel="stylesheet" href="css/styles.css">
+  </head>
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<body>
+  <div id="leftColumn">
+    <form>
+      <input type="text" id="boomboxInput" placeholder="https://audiofile.cc">
+    </form>
+    <div id="boomboxTrackInfo"><span id="boomboxTrackNum"></span> <span id="boomboxTrackName"></span></div>
+    <div id="boombox"> 
+      <span id="boomboxPreviousBtn" class="boombox" title="Previous Track">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="60px" height="60px" viewBox="0 0 100 100"
+        enable-background="new 0 0 100 100" xml:space="preserve">
+        <rect width="100" height="100"/>
+        <polygon fill="#FFFFFF" points="6.598,49.834 35.833,32.955
+        65.069,16.074 65.069,49.834 65.069,83.594 35.833,66.714 "/>
+        <rect x="-26" y="13.5" fill="#FFFFFF" width="17.5" height="68.5"/>
+        <rect x="73.5" y="15.667" fill="#FFFFFF" width="17.5" height="68.5"/>
+        </svg>
+      </span>
+      <span id="boomboxPlayBtn" class="boombox" title="Play Track">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="60px" height="60px" viewBox="0 0 100 100"
+        enable-background="new 0 0 100 100" xml:space="preserve">
+        <rect width="100" height="100"/>
+        <polygon fill="#FFFFFF" points="79.235,50 50,66.879 20.764,83.76
+        20.764,50 20.764,16.24 50,33.12 "/>
+        </svg>
+      </span> 
+      <span id="boomboxPauseBtn" class="boombox" title="Pause Track">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="60px" height="60px" viewBox="0 0 100 100"
+        enable-background="new 0 0 100 100" xml:space="preserve">
+        <rect width="100" height="100"/>
+        <rect x="25.5" y="15.667" fill="#FFFFFF" width="17.5" height="68.5"/>
+        <rect x="56.666" y="15.667" fill="#FFFFFF" width="17.5"
+        height="68.5"/>
+        </svg>
+      </span>
+      <span id="boomboxNextBtn" class="boombox" title="Next Track">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="60px" height="60px" viewBox="0 0 100 100"
+        enable-background="new 0 0 100 100" xml:space="preserve">
+        <rect width="100" height="100"/>
+        <polygon fill="#FFFFFF" points="95,50 65.765,66.879 36.528,83.76
+        36.528,50 36.528,16.24 65.765,33.12 "/>
+        <rect x="-26" y="13.5" fill="#FFFFFF" width="17.5" height="68.5"/>
+        <rect x="10.598" y="15.667" fill="#FFFFFF" width="17.5"
+        height="68.5"/>
+        </svg>
+      </span> 
+      <span id="boomboxVolumeDownBtn" class="boombox" title="Volume Down">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="60px" height="60px" viewBox="0 0 100 100"
+        enable-background="new 0 0 100 100" xml:space="preserve">
+        <rect width="100" height="100"/>
+        <polygon fill="#FFFFFF" points="50,79.235 33.121,50 16.24,20.763
+        50,20.763 83.76,20.763 66.88,50 "/>
+        <rect x="-26" y="13.5" fill="#FFFFFF" width="17.5" height="68.5"/>
+        <rect x="124.333" y="33.334" fill="#FFFFFF" width="17.5"
+        height="68.5"/>
+        </svg>
+      </span>
+      <span id="boomboxVolumeUpBtn" class="boombox" title="Volume Up">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="60px" height="60px" viewBox="0 0 100 100"
+        enable-background="new 0 0 100 100" xml:space="preserve">
+        <rect width="100" height="100"/>
+        <polygon fill="#FFFFFF" points="50,20.764 66.879,49.999 83.76,79.236
+        50,79.236 16.24,79.236 33.12,49.999 "/>
+        <rect x="-26" y="13.5" fill="#FFFFFF" width="17.5" height="68.5"/>
+        <rect x="124.333" y="33.334" fill="#FFFFFF" width="17.5"
+        height="68.5"/>
+        </svg>
+      </span> 
+    </div>
+  </div>
+  <div id="rightColumn">
+    <span id="boomboxListenBtn" class="boombox" title="Listen">
+      <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      width="60px" height="45.167px" viewBox="0 0 100 45.167"
+      enable-background="new 0 0 100 45.167" xml:space="preserve">
+      <rect y="0.167" width="100" height="45.167"/>
+      <polygon fill="#FFFFFF" points="-35,34.069 -51.878,4.833
+      -68.759,-24.404 -35,-24.404 -1.24,-24.404 -18.12,4.833 "/>
+      <rect x="-26" y="-11.667" fill="#FFFFFF" width="17.5" height="68.5"/>
+      <rect x="124.333" y="8.167" fill="#FFFFFF" width="17.5" height="68.5"/>
+      <text transform="matrix(1 0 0 1 2 35.167)" fill="#FFFFFF"
+      font-family="'Helvetica-Light'" font-size="36">Listen</text>
+      </svg>
+    </span>
+    <h3>Bookmarked boomboxes</h3>
+    <div id="boomboxBookmarks">
+    </div>
+  </div>
+<script>
+$(document).ready(function() {
+  var backgroundPage = chrome.extension.getBackgroundPage();
+  backgroundPage.BOOMBOX.methods.populateFields();
+
+  $("#boomboxListenBtn").click(function() {
+    var boomboxInput = $("#boomboxInput").val();
+    backgroundPage.BOOMBOX.methods.listen(boomboxInput);
+  });
+
+  $("#boomboxPlayBtn").click(function() {
+    backgroundPage.BOOMBOX.methods.play();
+  });
+
+  $("#boomboxPauseBtn").click(function() {
+    backgroundPage.BOOMBOX.methods.pause();
+  });
+
+  $("#boomboxNextBtn").click(function() {
+    backgroundPage.BOOMBOX.methods.next();
+  });
+
+  $("#boomboxPreviousBtn").click(function() {
+    backgroundPage.BOOMBOX.methods.prev();
+  });
+
+  $("#boomboxVolumeUpBtn").click(function() {
+    backgroundPage.BOOMBOX.methods.volumeup();
+  });
+
+  $("#boomboxVolumeDownBtn").click(function() {
+    backgroundPage.BOOMBOX.methods.volumedown();
+  });
+
+  $("a").click(function() {
+    var thisValue = $(this).text();
+  });
+});
+</script>
+</body>
+</html>

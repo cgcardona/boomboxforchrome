@@ -1,0 +1,103 @@
+body{
+  font-family:helvetica;
+  width:700px;
+}
+
+a, a:visited{
+  text-decoration:none;
+  color:black;
+}
+
+a:hover, a:active{
+  text-decoration:underline;
+  color:black;
+}
+
+#leftColumn{
+  float:left;
+  width:55%;
+  margin-right:10px;
+}
+
+#leftColumn #boomboxInput{
+  width:383px;
+  font-size:1.25em;
+  padding:1%;
+}
+
+#leftColumn #boomboxTrackInfo{
+  width:375px;
+  font-size:1.25em;
+  padding:1%;
+  margin-bottom:20px;
+  font-weight:200;
+  border:solid 1px black;
+}
+
+.boombox:hover{
+  cursor:pointer;
+}
+
+#rightColumn{
+  float:right;
+  width:43%;
+}
+
+#rightColumn h3{
+  margin-bottom:0;
+  font-weight:200;
+}
+
+#rightColumn #boomboxBookmarks{
+  height:80px;
+  overflow-x:hidden;
+  overflow-y:scroll;
+  margin-left:-20px;
+  margin-top:0;
+}
+
+#rightColumn #boomboxBookmarks ul{
+  list-style-type:decimal;
+}
+
+span.slick-black {
+  text-align:center;
+  width:525px;
+  background: #111;
+  background: -webkit-gradient(linear, 0 0, 0 100%,
+              color-stop(0, rgba(50, 50, 50, 0.9)),
+              color-stop(0.5, rgba(30, 30, 30, 0.9)),
+              color-stop(0.5, rgba(20, 20, 20, 0.9)),
+              color-stop(1, rgba(0, 0, 0, 0.9)));
+  border: 0;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 1px 1px 1px 0px rgba(135, 135, 135, 0.1), inset -1px -1px 1px 0px rgba(135, 135, 135, 0.1);
+  box-shadow: inset 1px 1px 1px 0px rgba(135, 135, 135, 0.1), inset -1px -1px 1px 0px rgba(135, 135, 135, 0.1);
+  color: #fff;
+  font-family: "helvetica neue", helvetica, arial, sans-serif;
+  font-size: 22px;
+  font-weight: lighter;
+  line-height: 1;
+  padding: 12px 0;
+  text-shadow: 0px -1px 1px rgba(0, 0, 0, .8), 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+span.slick-black:hover {
+  background: #222;
+  background: -webkit-gradient(linear, 0 0, 0 100%,
+              color-stop(0, rgba(70, 70, 70, 0.9)),
+              color-stop(0.5, rgba(50, 50, 50, 0.9)),
+              color-stop(0.5, rgba(40, 40, 40, 0.9)),
+              color-stop(1, rgba(20, 20, 20, 0.9)));
+  cursor: pointer;
+}
+
+span.slick-black:active {
+  background: #000;
+  background: -webkit-gradient(linear, 0 0, 0 100%,
+              color-stop(0, rgba(30, 30, 30, 0.9)),
+              color-stop(0.5, rgba(20, 20, 20, 0.9)),
+              color-stop(0.5, rgba(10, 10, 10, 0.9)),
+              color-stop(1, rgba(0, 0, 0, 0.9)));
+}

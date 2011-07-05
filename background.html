@@ -1,0 +1,300 @@
+<!doctype html>
+<head>
+    <title>Boombox audioplayer</title>
+<!-- 
+Boombox for Chrome(tm) by Audiofile v0.1.3
+https://audiofile.cc/chrome
+
+Copyright 2011, Carlos Cardona 
+Released under the MIT License.
+http://www.opensource.org/licenses/mit-license.php
+
+Date: Mon. July 4 2011 
+
+-->
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<script> 
+$(document).ready(function(){
+  window.BOOMBOX = {};
+  BOOMBOX.allViews;
+  BOOMBOX.audiofile = new Audio();
+  BOOMBOX.songTitles = [];
+  BOOMBOX.songPaths = [];
+  BOOMBOX.totalSongs = 1;
+  BOOMBOX.currentTime = 0;
+  BOOMBOX.trackNum = 1;
+  BOOMBOX.currentURL;
+  BOOMBOX.currentVolume;
+  BOOMBOX.currentSongPath;
+  BOOMBOX.trackName;
+  BOOMBOX.strungNum;
+
+
+  var bookmarkTreeNodes = chrome.bookmarks.getTree(
+    function(bookmarkTreeNodes) {
+      chrome.bookmarks.create({'parentId': bookmarkTreeNodes[0].children[0].id, 'title': 'Boombox bookmarks'});
+    }
+  );
+
+// A generic onclick callback function.
+function pageContextClick(info, tab) {
+
+  var bookmarkTreeNodes = chrome.bookmarks.getTree(
+    function(bookmarkTreeNodes) {
+
+      for (var k = 1; k <= bookmarkTreeNodes[0].children[0].children.length; k += 1) {
+        if (bookmarkTreeNodes[0].children[0].children[k].title == "Boombox bookmarks") {
+          var sumthin = info.pageUrl.length;
+          var other = info.pageUrl.length - 1;
+          var finalString = info.pageUrl.substring(other, sumthin);
+          if (finalString == "/") {
+            var printUrl = info.pageUrl.slice(0,other);
+          } else {
+            var printUrl = info.pageUrl;
+          }
+          
+          chrome.bookmarks.create({'parentId': bookmarkTreeNodes[0].children[0].children[k].id,
+          'title': tab.title,
+          'url': printUrl});
+        }
+      }
+    });
+}
+
+// A generic onclick callback function.
+function linkContextClick(info, tab) {
+
+  var bookmarkTreeNodes = chrome.bookmarks.getTree(
+    function(bookmarkTreeNodes) {
+
+      for (var k = 1; k <= bookmarkTreeNodes[0].children[0].children.length; k += 1) {
+        if (bookmarkTreeNodes[0].children[0].children[k].title == "Boombox bookmarks") {
+          var sumthin = info.linkUrl.length;
+          var other = info.linkUrl.length - 1;
+          var finalString = info.linkUrl.substring(other, sumthin);
+          if (finalString == "/") {
+            var printUrl = info.linkUrl.slice(0,other);
+          } else {
+            var printUrl = info.linkUrl;
+          }
+          chrome.bookmarks.create({'parentId': bookmarkTreeNodes[0].children[0].children[k].id,
+          'title': info.selectionText,
+          'url': printUrl});
+        }
+      }
+    });
+}
+
+// A generic onclick callback function.
+//function selectionContextClick(info, tab) {
+//
+//  var bookmarkTreeNodes = chrome.bookmarks.getTree(
+//    function(bookmarkTreeNodes) {
+//
+//      for (var k = 1; k <= bookmarkTreeNodes[0].children[0].children.length; k += 1) {
+//        if (bookmarkTreeNodes[0].children[0].children[k].title == "Boombox bookmarks") {
+//          chrome.bookmarks.create({'parentId': bookmarkTreeNodes[0].children[0].children[k].id,
+//          'title': info.selectionText,
+//          'url': info.selectionText});
+//        }
+//      }
+//    });
+//}
+// Create one test item for each context type.
+//var contexts = ["editable","image","video",
+//                "audio"];
+//for (var i = 0; i < contexts.length; i++) {
+//  var context = contexts[i];
+//  var title = "Test '" + context + "' menu item";
+//  var id = chrome.contextMenus.create({"title": title, "contexts":[context],
+//                                       "onclick": genericOnClick});
+//}
+  var pageContextMenu = chrome.contextMenus.create({"title": "Bookmark this boombox", "contexts":["page"],
+                                       "onclick": pageContextClick});
+                                     
+  var linkContextMenu = chrome.contextMenus.create({"title": "Bookmark this boombox link", "contexts":["link"],
+                                       "onclick": linkContextClick});
+                                     
+//  var selectionContextMenu = chrome.contextMenus.create({"title": "Bookmark this boombox selection", "contexts":["selection"],
+//                                       "onclick": selectionContextClick});
+
+
+  BOOMBOX.methods = {
+    populateFields : function() {
+    // Grab the DOM of all windows
+      BOOMBOX.allViews = chrome.extension.getViews();
+      BOOMBOX.backgroundPage = BOOMBOX.allViews[0];
+      BOOMBOX.popupPage = BOOMBOX.allViews[1];
+      BOOMBOX.trackName = localStorage["trackName"];
+      BOOMBOX.trackNum = localStorage["trackNum"];
+      BOOMBOX.currentURL = localStorage["trackNum"];
+      if (!BOOMBOX.trackName) {
+        BOOMBOX.methods.addLocalStorage("trackName","Song Title Here");
+      }
+      if (!BOOMBOX.trackNum) {
+        BOOMBOX.methods.addLocalStorage("trackNum","1");
+      }
+      //if (!BOOMBOX.currentURL) {
+      //  BOOMBOX.methods.addLocalStorage("currentURL","http://audiofile.cc");
+      //}
+      BOOMBOX.trackNum = localStorage["trackNum"];
+      BOOMBOX.trackName = localStorage["trackName"];
+
+      BOOMBOX.boomboxTrackNumDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackNum");
+      BOOMBOX.boomboxTrackNumDiv.innerHTML = BOOMBOX.trackNum;
+
+      BOOMBOX.boomboxTrackNameDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackName");
+      BOOMBOX.boomboxTrackNameDiv.innerHTML = BOOMBOX.trackName;
+  
+      var bookmarkTreeNodes = chrome.bookmarks.getTree(
+        function(bookmarkTreeNodes) {
+        for (var k = 1; k <= bookmarkTreeNodes[0].children[0].children.length; k += 1) {
+          if (bookmarkTreeNodes[0].children[0].children[k].title == "Boombox bookmarks") {
+            var list = $('<ul>');
+            for (var n = 0; n < bookmarkTreeNodes[0].children[0].children[k].children.length; n += 1) {
+              list.append("<li><a class='boomboxBookmarksLink' href='" + bookmarkTreeNodes[0].children[0].children[k].children[n].url + "'> " + bookmarkTreeNodes[0].children[0].children[k].children[n].title + "</a></li>");
+            }
+            BOOMBOX.boomboxBookmarksDiv = BOOMBOX.popupPage.document.getElementById("boomboxBookmarks");
+            var innerLinks = BOOMBOX.boomboxBookmarksDiv.getElementsByTagName("a");
+            list.appendTo(BOOMBOX.boomboxBookmarksDiv);
+            $(innerLinks).click(function() {
+              var bookmarkedURL = $(this).attr("href");
+              BOOMBOX.boomboxInput = BOOMBOX.popupPage.document.getElementById("boomboxInput");
+              BOOMBOX.boomboxInput.value = bookmarkedURL;
+              BOOMBOX.boomboxListenBtn = BOOMBOX.popupPage.document.getElementById("boomboxListenBtn");
+              console.log(BOOMBOX.boomboxListenBtn);
+              BOOMBOX.boomboxListenBtn.click();
+            });
+          }
+        }
+              BOOMBOX.boomboxInput = BOOMBOX.popupPage.document.getElementById("boomboxInput");
+        var myInnerChild = bookmarkTreeNodes[0].children[0].children;
+        for (i = 0; i < myInnerChild.length; i++) {
+            if (myInnerChild[i]["title"] == "Boombox bookmarks") {
+            }         
+        }
+      });
+    },
+    addLocalStorage: function(key, value) {
+      localStorage[key] = value;
+    },
+    listen: function(boomboxInput) {
+      BOOMBOX.boomboxInput = boomboxInput;
+      BOOMBOX.songTitles = [];
+      BOOMBOX.songPaths = [];
+      BOOMBOX.audiofile.pause();
+      BOOMBOX.currentTime = 0;
+      // AJAX get boombox.json, parse it, and push the keys/values into respective arrays.
+      $.getJSON(BOOMBOX.boomboxInput + "/boombox.json", function(data) {
+        $.each(data, function(key, val) {
+          BOOMBOX.songTitles.push(key);
+          BOOMBOX.songPaths.push(val);
+        });
+        BOOMBOX.totalSongs = BOOMBOX.songPaths.length;
+        BOOMBOX.trackName = BOOMBOX.songTitles[0];
+        BOOMBOX.currentURL = BOOMBOX.boomboxInput;
+        BOOMBOX.trackNum = 1;
+        BOOMBOX.methods.addLocalStorage("trackNum","1");
+        BOOMBOX.methods.addLocalStorage("trackName",BOOMBOX.trackName);
+        //BOOMBOX.methods.addLocalStorage("currentURL",BOOMBOX.currentURL);
+        BOOMBOX.boomboxTrackNumDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackNum");
+        BOOMBOX.boomboxTrackNumDiv.innerHTML = "1";
+        BOOMBOX.boomboxTrackNameDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackName");
+        BOOMBOX.boomboxTrackNameDiv.innerHTML = BOOMBOX.trackName;
+        chrome.browserAction.setBadgeBackgroundColor({color:[0,0,255,255]});
+        chrome.browserAction.setBadgeText({text:"1"});
+      });
+    },
+    play: function() {
+      if (BOOMBOX.currentTime === 0) {
+        // Get the track.
+        BOOMBOX.searchTrackNum = BOOMBOX.trackNum - 1;
+        BOOMBOX.trackName = BOOMBOX.songPaths[BOOMBOX.searchTrackNum];
+
+        // Construct the src path.
+        BOOMBOX.audiofile.src = BOOMBOX.boomboxInput + "/" +  BOOMBOX.trackName + ".mp3";
+        BOOMBOX.audiofile.play();
+        } else {
+        // If the track isn't starting at 0 resume where it was.
+        BOOMBOX.audiofile.currentTime = BOOMBOX.currentTime;
+        BOOMBOX.audiofile.play();
+      }
+      chrome.browserAction.setBadgeBackgroundColor({color:[255,0,0,255]});
+    },
+    pause: function() {
+      // Pause the song and save it's time.
+      BOOMBOX.audiofile.pause();
+      BOOMBOX.currentTime = BOOMBOX.audiofile.currentTime;
+      chrome.browserAction.setBadgeBackgroundColor({color:[0,0,255,255]});
+    },
+    next: function() {
+      if (BOOMBOX.trackNum >= BOOMBOX.totalSongs) {
+        BOOMBOX.trackNum = BOOMBOX.trackNum;
+      } else {
+        BOOMBOX.trackNum = (+BOOMBOX.trackNum) + 1;
+      }
+      BOOMBOX.searchTrackNum = BOOMBOX.trackNum - 1;
+      BOOMBOX.audiofile.pause();
+      BOOMBOX.currentTime = 0;
+      BOOMBOX.trackName = BOOMBOX.songTitles[BOOMBOX.searchTrackNum];
+
+      BOOMBOX.boomboxTrackNumDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackNum");
+      BOOMBOX.boomboxTrackNumDiv.innerHTML = BOOMBOX.trackNum;
+      BOOMBOX.methods.addLocalStorage("trackNum",BOOMBOX.trackNum);
+
+      BOOMBOX.boomboxTrackNameDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackName");
+      BOOMBOX.boomboxTrackNameDiv.innerHTML = BOOMBOX.trackName;
+      BOOMBOX.methods.addLocalStorage("trackName",BOOMBOX.trackName);
+
+      BOOMBOX.strungNum = BOOMBOX.trackNum.toString(10);
+      chrome.browserAction.setBadgeText({text:BOOMBOX.strungNum});
+      chrome.browserAction.setBadgeBackgroundColor({color:[0,0,255,255]});
+    },
+    prev: function() {
+      if (BOOMBOX.trackNum <= 1) {
+        BOOMBOX.trackNum = BOOMBOX.trackNum;
+      } else {
+        BOOMBOX.trackNum = (+BOOMBOX.trackNum) - 1;
+      }
+      BOOMBOX.searchTrackNum = BOOMBOX.trackNum - 1;
+      BOOMBOX.audiofile.pause();
+      BOOMBOX.currentTime = 0;
+      BOOMBOX.trackName = BOOMBOX.songTitles[BOOMBOX.searchTrackNum];
+
+      BOOMBOX.boomboxTrackNumDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackNum");
+      BOOMBOX.boomboxTrackNumDiv.innerHTML = BOOMBOX.trackNum;
+      BOOMBOX.methods.addLocalStorage("trackNum",BOOMBOX.trackNum);
+
+      BOOMBOX.boomboxTrackNameDiv = BOOMBOX.popupPage.document.getElementById("boomboxTrackName");
+      BOOMBOX.boomboxTrackNameDiv.innerHTML = BOOMBOX.trackName;
+      BOOMBOX.methods.addLocalStorage("trackName",BOOMBOX.trackName);
+      BOOMBOX.strungNum = BOOMBOX.trackNum.toString(10);
+      chrome.browserAction.setBadgeText({text:BOOMBOX.strungNum});
+      chrome.browserAction.setBadgeBackgroundColor({color:[0,0,255,255]});
+    },
+    volumeup: function() {
+      BOOMBOX.currentVolume = BOOMBOX.audiofile.volume;
+      // Prevent the volume from ever going over 1.
+      if (BOOMBOX.currentVolume >= 1) {
+        BOOMBOX.newVolume = BOOMBOX.currentVolume;
+        } else {
+        BOOMBOX.newVolume = BOOMBOX.currentVolume + 0.1;
+      }
+      BOOMBOX.audiofile.volume = BOOMBOX.newVolume;
+    },
+    volumedown: function() {
+      BOOMBOX.currentVolume = BOOMBOX.audiofile.volume;
+      // Prevent the volume from ever below 0.1.
+      if (BOOMBOX.currentVolume <= 0.1) {
+        BOOMBOX.newVolume = BOOMBOX.currentVolume;
+        } else {
+        BOOMBOX.newVolume = BOOMBOX.currentVolume - 0.1;
+      }
+      BOOMBOX.audiofile.volume = BOOMBOX.newVolume;
+    } 
+  };
+});
+</script>
+</body>
