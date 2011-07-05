@@ -9,7 +9,7 @@ leverages the amazing functionality of HTML5 along with the extensive API
 provided by Chrome to give you the ability to bookmark boomboxes and to listen
 to them no matter where you are on the web.
 
-Free Download available in the [Chrome Web App Store](https://chrome.google.com/webstore/detail/bpfbenefadjgilnjjldiemofhgehjch).
+Free Download available in the [Chrome Web App Store](https://chrome.google.com/webstore/detail/bpfbenefadjgimlnjjldiemofhgehjch).
 
 More info at [Audiofile.cc/chrome](https://audiofile.cc/chrome).
 
